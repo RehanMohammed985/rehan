@@ -133,6 +133,35 @@ body {
   animation: holo-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* holographic diagram */
+@keyframes holo-rot {
+  to { transform: rotate(360deg); }
+}
+
+.holo-spin {
+  animation: holo-rot linear infinite;
+  transform-origin: 210px 210px;
+}
+
+.holo-spin-rev {
+  animation-direction: reverse;
+}
+
+@keyframes holo-core-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.holo-core {
+  animation: holo-core-pulse 2.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .holo-spin, .holo-core {
+    animation: none;
+  }
+}
+
 @keyframes blink {
   0%, 49% { opacity: 1; }
   50%, 100% { opacity: 0; }
