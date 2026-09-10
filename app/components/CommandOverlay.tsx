@@ -216,12 +216,12 @@ export default function CommandOverlay() {
       )}
 
       {open && (
-        <div className="holo-in fixed inset-x-0 bottom-0 z-50 pointer-events-none">
-          {/* light falloff so text stays readable, no hard edges */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/70 to-transparent" aria-hidden="true" />
-          <div className="holo-scan absolute inset-0" aria-hidden="true" />
-          <div className="relative max-w-3xl mx-auto px-6 pb-6 pt-10 pointer-events-auto">
-            <div ref={scrollRef} className="max-h-[36vh] overflow-y-auto font-mono text-[13px] leading-relaxed mb-1">
+        <div className="holo-in fixed bottom-5 left-4 sm:left-8 z-50 w-[min(92vw,29rem)] pointer-events-none">
+          {/* translucent projection pane — page stays visible behind it */}
+          <div className="holo-pane absolute -inset-x-5 -top-10 -bottom-4" aria-hidden="true" />
+          <div className="holo-scan absolute -inset-x-5 -top-10 -bottom-4" aria-hidden="true" />
+          <div className="relative pointer-events-auto">
+            <div ref={scrollRef} className="max-h-[21vh] overflow-y-auto font-mono text-[13px] leading-relaxed mb-1">
               {lines.map((l, i) =>
                 l.kind === 'cmd' ? (
                   <p key={i} className="holo-text-bright">
