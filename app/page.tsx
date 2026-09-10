@@ -65,10 +65,10 @@ export default function Home() {
               <span className="block italic ml-14 sm:ml-28 lg:ml-44 text-[1.18em] -mt-1">Mohammed</span>
             </h1>
 
-            <p className="rise rise-3 text-neutral-400 text-base leading-relaxed max-w-sm pointer-events-auto mt-10 lg:ml-[38%]">
-              Business + CS at NC State. Building at the edge of AI —
-              agents that think together, evals that keep them honest, and
-              software that sees the world through a camera.
+            <p className="rise rise-3 text-neutral-400 text-base leading-relaxed max-w-sm pointer-events-auto mt-10 lg:ml-[18%]">
+              Studying Business and Computer Science. Building innovative
+              solutions, love scaling products — and a firm believer that
+              obsession can win the world.
             </p>
 
             <div className="rise rise-4 flex flex-wrap items-center gap-x-7 gap-y-3 pointer-events-auto mt-10">
