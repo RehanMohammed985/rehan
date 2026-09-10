@@ -2,7 +2,7 @@
 const nextConfig = {
   output: 'export',
   trailingSlash: true,
-  basePath: '', // For root domain hosting on rehan.world
+  basePath: '', // Root-domain hosting (rehan-one.vercel.app)
   images: {
     unoptimized: true,
   },

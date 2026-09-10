@@ -1,66 +1,85 @@
 'use client'
 
-import { Github, Linkedin, Twitter } from 'lucide-react'
+import Swarm from './components/Swarm'
+import CommandOverlay from './components/CommandOverlay'
 
-function Artwork() {
+const socials = [
+  { label: 'GitHub', href: 'https://github.com/RehanMohammed985' },
+  { label: 'LinkedIn', href: 'https://linkedin.com/in/rehan-mohammed-237bab273/' },
+  { label: 'X', href: 'https://x.com/rehan_m0' },
+]
+
+const marquee = [
+  'multi-agent systems',
+  'evals',
+  'computer vision',
+  'reinforcement learning',
+  'agent architectures',
+  'causal inference',
+]
+
+function MarqueeStrip() {
   return (
-    <svg viewBox="0 0 400 400" className="w-full h-full animate-spin" style={{ animationDuration: '30s' }} fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="200" cy="200" r="150" stroke="currentColor" strokeWidth="1.5" opacity="0.6" strokeDasharray="4 8" />
-      <circle cx="200" cy="200" r="120" stroke="currentColor" strokeWidth="1.5" opacity="0.85" />
-      <circle cx="200" cy="200" r="70" stroke="currentColor" strokeWidth="1.5" opacity="0.85" />
-      <circle cx="200" cy="200" r="30" stroke="currentColor" strokeWidth="1" opacity="0.7" />
-      <line x1="200" y1="80" x2="200" y2="320" stroke="currentColor" strokeWidth="1.5" opacity="0.7" />
-      <line x1="80" y1="200" x2="320" y2="200" stroke="currentColor" strokeWidth="1.5" opacity="0.7" />
-      <line x1="115" y1="115" x2="285" y2="285" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
-      <line x1="285" y1="115" x2="115" y2="285" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
-      <circle cx="200" cy="200" r="6" fill="currentColor" opacity="1" />
-      <circle cx="200" cy="80" r="5" fill="currentColor" opacity="0.9" />
-      <circle cx="200" cy="320" r="5" fill="currentColor" opacity="0.9" />
-      <circle cx="80" cy="200" r="5" fill="currentColor" opacity="0.9" />
-      <circle cx="320" cy="200" r="5" fill="currentColor" opacity="0.9" />
-      <circle cx="115" cy="115" r="4" fill="currentColor" opacity="0.8" />
-      <circle cx="285" cy="285" r="4" fill="currentColor" opacity="0.8" />
-      <circle cx="285" cy="115" r="4" fill="currentColor" opacity="0.8" />
-      <circle cx="115" cy="285" r="4" fill="currentColor" opacity="0.8" />
-      <circle cx="200" cy="200" r="180" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 6" opacity="0.5" />
-    </svg>
+    <div className="relative border-t border-neutral-900 overflow-hidden py-3 select-none" aria-hidden="true">
+      <div className="marquee-track flex items-center text-neutral-600 text-xs tracking-[0.2em] uppercase whitespace-nowrap">
+        {[0, 1].map((copy) => (
+          <div key={copy} className="flex items-center shrink-0">
+            {marquee.map((m, i) => (
+              <span key={i} className="flex items-center shrink-0">
+                <span className="px-4">{m}</span>
+                <span className="text-green-400/70 px-4">·</span>
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 
 export default function Home() {
   return (
     <>
-      <div className="max-w-4xl mx-auto px-6 pt-20 lg:pt-0 pb-6" style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
-        {/* Hero */}
-        <div className="relative flex flex-col lg:flex-row items-center" style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
-          <div className="lg:pr-[416px]">
-            <p className="text-black text-2xl sm:text-3xl lg:text-4xl font-bold leading-snug mb-4 sm:mb-6">
-              I am Rehan Mohammed, currently majoring in Business and Computer Science at NC State. I like to explore high-stakes technical problems and build solutions that scale.
+    <div className="relative flex flex-col" style={{ minHeight: 'calc(100vh - 5.5rem)' }}>
+      <Swarm />
+
+      {/* content sits above the simulation but lets it show through */}
+      <div className="relative flex-1 flex flex-col pointer-events-none">
+        <div className="max-w-6xl w-full mx-auto px-6 my-auto pt-12 pb-8">
+          <div className="rise rise-1 flex items-center gap-2.5 mb-6 pointer-events-auto w-fit">
+            <span className="status-dot shrink-0" />
+            <p className="text-neutral-400 text-[13px] tracking-wide">
+              Live now — multi-agent research at ARNAV Lab, NC State
             </p>
-            <p className="text-black text-lg sm:text-xl lg:text-2xl leading-relaxed mb-6 sm:mb-10">
-              I am a firm believer that obsession, when directed with purpose, can turn impossible goals into achievable ones. Great success often starts with an obsession to improve, create, or achieve.
-            </p>
-            <div className="flex items-center gap-5 sm:gap-7">
-              <a href="https://github.com/RehanMohammed985" target="_blank" rel="noopener noreferrer" className="text-black hover:opacity-60 transition-opacity">
-                <Github className="w-7 h-7" />
-              </a>
-              <a href="https://linkedin.com/in/rehan-mohammed-237bab273/" target="_blank" rel="noopener noreferrer" className="text-black hover:opacity-60 transition-opacity">
-                <Linkedin className="w-7 h-7" />
-              </a>
-              <a href="https://x.com/rehan_m0" target="_blank" rel="noopener noreferrer" className="text-black hover:opacity-60 transition-opacity">
-                <Twitter className="w-7 h-7" />
-              </a>
-            </div>
           </div>
-          <div className="block lg:absolute lg:right-0 lg:top-1/2 lg:-translate-y-1/2 w-64 sm:w-80 lg:w-96 h-64 sm:h-80 lg:h-96 mt-8 lg:mt-0 shrink-0">
-            <Artwork />
+
+          <h1 className="rise rise-2 font-serif-display text-neutral-50 leading-[0.95] text-[15vw] sm:text-[11vw] lg:text-[9.5vw] mb-8">
+            Rehan <span className="italic">Mohammed</span>
+          </h1>
+
+          <div className="rise rise-3 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+            <p className="text-neutral-400 text-base leading-relaxed max-w-md pointer-events-auto">
+              Business + CS at NC State. Building at the edge of AI —
+              agents that think together, evals that keep them honest, and
+              software that sees the world through a camera.
+            </p>
+            <div className="flex flex-wrap items-center gap-x-7 gap-y-3 pointer-events-auto">
+              {socials.map((s) => (
+                <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="link-quiet text-neutral-500 hover:text-neutral-200 text-sm">
+                  {s.label}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
 
-        <footer className="pt-6">
-          <p className="text-black text-xs">&copy; {new Date().getFullYear()} Rehan Mohammed</p>
-        </footer>
+        <div className="pointer-events-auto">
+          <MarqueeStrip />
+        </div>
       </div>
+    </div>
+
+    <CommandOverlay />
     </>
   )
 }

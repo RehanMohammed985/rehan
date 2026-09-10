@@ -1,18 +1,20 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Instrument_Serif } from 'next/font/google'
 import './globals.css'
 import Navbar from './components/Navbar'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
+const serif = Instrument_Serif({ subsets: ['latin'], weight: '400', style: ['normal', 'italic'], variable: '--font-serif' })
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  themeColor: '#0a0a0a',
 }
 
 export const metadata: Metadata = {
   title: 'Rehan Mohammed',
-  description: 'CS @ NC State. AI researcher, builder, and curious mind.',
+  description: 'AI researcher & builder. Business + CS @ NC State.',
   icons: {
     icon: '/favicon.svg',
     shortcut: '/favicon.svg',
@@ -26,10 +28,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="bg-neutral-100">
-      <body className={`${inter.className} bg-neutral-100 text-black min-h-screen antialiased`}>
+    <html lang="en" className="bg-[#0a0a0a]">
+      <body className={`${inter.variable} ${serif.variable} font-sans bg-[#0a0a0a] text-neutral-200 min-h-screen antialiased`}>
         <Navbar />
-        <main className="pt-14">
+        <main>
           {children}
         </main>
       </body>

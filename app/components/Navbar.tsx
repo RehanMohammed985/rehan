@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const navItems = [
-  { label: 'Home', href: '/' },
   { label: 'Experience', href: '/experience' },
   { label: 'Projects', href: '/projects' },
 ]
@@ -13,26 +12,26 @@ export default function Navbar() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-neutral-100 lg:bg-neutral-100/80 lg:backdrop-blur-sm">
-      <div className="max-w-4xl mx-auto px-6">
-        <div className="flex items-center justify-between h-16">
-          <Link href="/" className="text-black font-bold text-sm sm:text-base lg:text-lg">
+    <header>
+      <div className="max-w-2xl mx-auto px-6 pt-10 sm:pt-14">
+        <div className="flex items-baseline justify-between">
+          <Link href="/" className="text-neutral-100 text-sm tracking-wide hover:text-white transition-colors">
             Rehan Mohammed
           </Link>
-          <div className="flex items-center gap-3 sm:gap-5 lg:gap-8">
+          <nav className="flex items-baseline gap-6 sm:gap-8">
             {navItems.map((item) => {
-              const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href)
+              const isActive = pathname.startsWith(item.href)
               return (
                 <Link key={item.href} href={item.href}>
-                  <span className={`text-black text-sm sm:text-base lg:text-lg transition-opacity ${isActive ? 'underline decoration-1 underline-offset-4 decoration-black/50' : 'hover:underline hover:decoration-1 hover:underline-offset-4 hover:decoration-black/30'}`}>
+                  <span className={`text-[13px] tracking-wide transition-colors ${isActive ? 'text-neutral-100' : 'text-neutral-500 hover:text-neutral-200'}`}>
                     {item.label}
                   </span>
                 </Link>
               )
             })}
-          </div>
+          </nav>
         </div>
       </div>
-    </nav>
+    </header>
   )
 }
