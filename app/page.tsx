@@ -9,7 +9,7 @@ export default function Home() {
         <p>
           I build AI agents and ship fast.
           <br />
-          Business and Computer Science at NC State.
+          Business, Computer Science and Philosophy at NC State.
         </p>
         <ul className="nav">
           <li><Link href="/projects">Projects</Link></li>

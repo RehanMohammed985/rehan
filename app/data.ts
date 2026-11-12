@@ -7,7 +7,7 @@ export const now = [
 export const projects = [
   {
     name: 'Pathway',
-    desc: 'First place at WolfHacks and NeuroHack.',
+    desc: 'First place at WolfHacks.',
   },
   {
     name: 'Kinesis',
