@@ -1,19 +1,17 @@
 import Link from 'next/link'
 import { Links } from './components'
+import Quote from './Quote'
 
 export default function Home() {
   return (
     <div className="home">
       <div>
-        <blockquote className="quote">
-          <p>It is not because things are difficult that we do not dare; it is because we do not dare that things are difficult.</p>
-          <cite>Seneca</cite>
-        </blockquote>
+        <Quote />
         <h1>Rehan Mohammed</h1>
         <p>
-          I love building solutions that scale.
-          <br />
           Business, Computer Science and Philosophy at NC State.
+          <br />
+          Interested in startups, innovation and building solutions that scale.
         </p>
         <ul className="nav">
           <li><Link href="/projects">Projects</Link></li>
