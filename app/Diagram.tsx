@@ -1,15 +1,14 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { solids } from './solids'
 
-// Lorenz system, sigma = 10, rho = 28, beta = 8/3
-function step(p: [number, number, number], dt: number): [number, number, number] {
-  const [x, y, z] = p
-  return [x + dt * 10 * (y - x), y + dt * (x * (28 - z) - y), z + dt * (x * y - (8 / 3) * z)]
-}
+const HOLD = 7000 // ms each solid is shown
+const FADE = 900 // ms cross-fade
 
 export default function Diagram() {
   const [open, setOpen] = useState(false)
+  const [which, setWhich] = useState(4)
   const ref = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -26,90 +25,97 @@ export default function Diagram() {
     ctx.scale(dpr, dpr)
 
     const fg = getComputedStyle(document.documentElement).getPropertyValue('--fg').trim() || '#111'
-    const MAX = reduce ? 6000 : 2200
-    let pts: [number, number, number][] = []
-    let p: [number, number, number] = [0.1, 0, 0]
-    // skip the transient so the trail starts on the attractor
-    for (let i = 0; i < 400; i++) p = step(p, 0.01)
-    for (let i = 0; i < MAX; i++) { p = step(p, reduce ? 0.01 : 0.005); pts.push(p) }
-
-    let t = 0
-    let theta = 0
-    let raf = 0
-    const scale = size / 58
     const cx = size / 2
-    const cy = size / 2 + 2
+    const cy = size / 2
+    const R = size * 0.36
 
-    const draw = () => {
-      ctx.clearRect(0, 0, size, size)
-      const cos = Math.cos(theta)
-      const sin = Math.sin(theta)
-      const n = pts.length
+    const drawSolid = (s: (typeof solids)[number], ax: number, ay: number, alpha: number) => {
+      const cx1 = Math.cos(ax), sx1 = Math.sin(ax), cy1 = Math.cos(ay), sy1 = Math.sin(ay)
+      const pts = s.verts.map(([x, y, z]) => {
+        // rotate about y then x
+        const x1 = x * cy1 + z * sy1
+        const z1 = -x * sy1 + z * cy1
+        const y1 = y * cx1 - z1 * sx1
+        const z2 = y * sx1 + z1 * cx1
+        const p = 1 / (1 + z2 * 0.28) // mild perspective
+        return { X: cx + x1 * R * p, Y: cy + y1 * R * p, z: z2 }
+      })
       ctx.lineWidth = 1
-      ctx.lineJoin = 'round'
       ctx.lineCap = 'round'
-      // draw in short runs so the tail fades
-      const run = 40
-      for (let s = 0; s < n - 1; s += run) {
-        const a = reduce ? 0.55 : 0.03 + 0.9 * Math.pow(s / n, 2)
-        ctx.strokeStyle = fg
-        ctx.globalAlpha = a
+      ctx.strokeStyle = fg
+      for (const [a, b] of s.edges) {
+        const depth = (pts[a].z + pts[b].z) / 2 // -1 back … 1 front
+        ctx.globalAlpha = alpha * (0.18 + 0.62 * (depth + 1) / 2)
         ctx.beginPath()
-        for (let i = s; i <= Math.min(s + run, n - 1); i++) {
-          const [x, y, z] = pts[i]
-          const px = cx + (x * cos - y * sin) * scale
-          const py = cy - (z - 27) * scale
-          if (i === s) ctx.moveTo(px, py)
-          else ctx.lineTo(px, py)
-        }
+        ctx.moveTo(pts[a].X, pts[a].Y)
+        ctx.lineTo(pts[b].X, pts[b].Y)
         ctx.stroke()
       }
-      ctx.globalAlpha = 1
-      if (!reduce && n) {
-        const [x, y, z] = pts[n - 1]
-        ctx.fillStyle = fg
+      ctx.fillStyle = fg
+      for (const p of pts) {
+        ctx.globalAlpha = alpha * (0.3 + 0.7 * (p.z + 1) / 2)
         ctx.beginPath()
-        ctx.arc(cx + (x * cos - y * sin) * scale, cy - (z - 27) * scale, 2.2, 0, Math.PI * 2)
+        ctx.arc(p.X, p.Y, 1.6, 0, Math.PI * 2)
         ctx.fill()
       }
+      ctx.globalAlpha = 1
     }
 
     if (reduce) {
-      draw()
+      drawSolid(solids[4], 0.5, 0.6, 1)
       return
     }
 
-    const tick = () => {
-      for (let i = 0; i < 4; i++) {
-        p = step(p, 0.005)
-        pts.push(p)
+    let raf = 0
+    const t0 = performance.now()
+    let shown = -1
+    const tick = (now: number) => {
+      const t = Math.max(0, now - t0)
+      const ax = 0.45 + Math.sin(t * 0.00023) * 0.35
+      const ay = t * 0.00035
+      const slot = Math.floor(t / HOLD) % solids.length
+      const into = t % HOLD
+      ctx.clearRect(0, 0, size, size)
+      if (into < FADE && t > HOLD) {
+        const prev = (slot + solids.length - 1) % solids.length
+        const k = into / FADE
+        drawSolid(solids[prev], ax, ay, 1 - k)
+        drawSolid(solids[slot], ax, ay, k)
+      } else {
+        drawSolid(solids[slot], ax, ay, 1)
       }
-      if (pts.length > MAX) pts = pts.slice(pts.length - MAX)
-      t += 1
-      theta = 0.9 * Math.sin(t * 0.008)
-      draw()
+      if (slot !== shown) {
+        shown = slot
+        setWhich(slot)
+      }
       raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
   }, [])
 
+  const s = solids[which]
+
   return (
     <div className={`diagram${open ? ' open' : ''}`}>
       <button
         type="button"
         aria-expanded={open}
-        aria-describedby="lorenz"
+        aria-describedby="solids"
         onClick={() => setOpen((o) => !o)}
-        aria-label="Lorenz attractor, animated"
+        aria-label={`${s.name}, one of the five Platonic solids, rotating`}
       >
         <canvas ref={ref} />
+        <span className="caption">
+          {s.name} <span className="dim">· {s.element}</span>
+        </span>
       </button>
-      <div className="tip" id="lorenz" role="tooltip">
+      <div className="tip" id="solids" role="tooltip">
         <p>
-          The Lorenz attractor. In 1963 Edward Lorenz reduced the weather to three equations
-          and found a system that never repeats and never settles. Nudge the start by a
-          millionth and the path is unrecognisable within seconds. The butterfly effect.
+          The five Platonic solids, the only convex shapes built from identical regular faces.
+          In the Timaeus, Plato matched four of them to fire, earth, air and water and gave the
+          fifth, the dodecahedron, to the universe itself. Euclid closed the Elements by proving
+          there can be no sixth.
         </p>
       </div>
     </div>
