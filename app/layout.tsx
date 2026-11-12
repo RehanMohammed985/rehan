@@ -12,7 +12,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: 'Rehan Mohammed',
-  description: 'I build AI agents and ship fast. Business, Computer Science and Philosophy at NC State.',
+  description: 'I love building solutions that scale. Business, Computer Science and Philosophy at NC State.',
   icons: {
     icon: '/favicon.svg',
     shortcut: '/favicon.svg',

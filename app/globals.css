@@ -65,11 +65,25 @@ h1 {
 
 .home > div {
   width: 100%;
-  max-width: 24rem;
+  max-width: 26rem;
 }
 
-.home p {
+.home > div > p {
   margin-top: 1rem;
+}
+
+.quote {
+  margin-bottom: 3.5rem;
+  font-style: italic;
+  color: var(--mid);
+}
+
+.quote cite {
+  display: block;
+  margin-top: 0.5rem;
+  font-style: normal;
+  font-size: 13px;
+  color: var(--dim);
 }
 
 .home .nav {

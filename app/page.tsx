@@ -5,9 +5,13 @@ export default function Home() {
   return (
     <div className="home">
       <div>
+        <blockquote className="quote">
+          <p>It is not because things are difficult that we do not dare; it is because we do not dare that things are difficult.</p>
+          <cite>Seneca</cite>
+        </blockquote>
         <h1>Rehan Mohammed</h1>
         <p>
-          I build AI agents and ship fast.
+          I love building solutions that scale.
           <br />
           Business, Computer Science and Philosophy at NC State.
         </p>
