@@ -124,9 +124,7 @@ h1 {
   z-index: 1;
 }
 
-.diagram:hover .tip,
-.diagram.open .tip,
-.diagram:focus-within .tip {
+.diagram.open .tip {
   opacity: 1;
   visibility: visible;
   transform: translateX(-50%) translateY(0);
@@ -335,9 +333,7 @@ h1 {
     left: 0.75rem;
     transform: translateX(0) translateY(-4px);
   }
-  .diagram:hover .tip,
-  .diagram.open .tip,
-  .diagram:focus-within .tip {
+  .diagram.open .tip {
     transform: translateX(0) translateY(0);
   }
 }
