@@ -60,12 +60,76 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 4rem;
   padding: 2rem 1.5rem;
 }
 
-.home > div {
+.home > div:first-child {
   width: 100%;
   max-width: 26rem;
+}
+
+/* diagram */
+
+.diagram {
+  position: relative;
+  flex: 0 0 300px;
+  width: 300px;
+}
+
+.diagram button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+
+.diagram button:focus-visible {
+  outline: 1px solid var(--fg);
+  outline-offset: 8px;
+}
+
+.diagram canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  opacity: 0.85;
+  transition: opacity 0.3s;
+}
+
+.diagram:hover canvas,
+.diagram.open canvas {
+  opacity: 1;
+}
+
+.diagram .tip {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 0.25rem);
+  transform: translateX(-50%) translateY(-4px);
+  width: 20rem;
+  max-width: calc(100vw - 3rem);
+  padding: 0.75rem 0.9rem;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+  z-index: 1;
+}
+
+.diagram:hover .tip,
+.diagram.open .tip,
+.diagram:focus-within .tip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
 }
 
 .home > div > p {
@@ -253,11 +317,32 @@ h1 {
   font-size: 13px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 900px) {
   .home {
+    flex-direction: column;
     align-items: flex-start;
+    gap: 3rem;
     padding-top: 6rem;
+    padding-bottom: 5rem;
+    min-height: 0;
   }
+  .diagram {
+    flex: none;
+    width: 220px;
+    margin-left: -0.75rem;
+  }
+  .diagram .tip {
+    left: 0.75rem;
+    transform: translateX(0) translateY(-4px);
+  }
+  .diagram:hover .tip,
+  .diagram.open .tip,
+  .diagram:focus-within .tip {
+    transform: translateX(0) translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
   .page {
     padding-top: 3rem;
   }

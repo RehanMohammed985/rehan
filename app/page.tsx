@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Links } from './components'
 import Quote from './Quote'
+import Diagram from './Diagram'
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
         </ul>
         <Links />
       </div>
+      <Diagram />
     </div>
   )
 }
