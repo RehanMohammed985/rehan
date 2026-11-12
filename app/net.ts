@@ -40,7 +40,7 @@ export function mountNet(canvas: HTMLCanvasElement, onStatus: (s: Status) => voi
   let W1: number[], b1: number[], W2: number[], b2: number[], W3: number[], b3: number
   let m: number[], v: number[], P: number[] // flat params and adam moments
   let step = 0
-  const lr = 0.006
+  const lr = 0.004
   const sizes = [2 * H, H, H * H, H, H, 1]
   const total = sizes.reduce((a, b) => a + b, 0)
 
@@ -60,6 +60,7 @@ export function mountNet(canvas: HTMLCanvasElement, onStatus: (s: Status) => voi
     m = new Array(total).fill(0)
     v = new Array(total).fill(0)
     step = 0
+    primed = false
     view()
   }
   const view = () => {
@@ -90,7 +91,7 @@ export function mountNet(canvas: HTMLCanvasElement, onStatus: (s: Status) => voi
   const trainBatch = () => {
     G.fill(0)
     let loss = 0
-    const B = 32
+    const B = 64
     for (let n = 0; n < B; n++) {
       const idx = Math.floor(Math.random() * N)
       const [x, y] = X[idx]
@@ -133,14 +134,16 @@ export function mountNet(canvas: HTMLCanvasElement, onStatus: (s: Status) => voi
   // contour lines of the prediction field (marching squares)
   const GR = 56
   const F = new Float32Array((GR + 1) * (GR + 1))
+  const Fs = new Float32Array((GR + 1) * (GR + 1)) // smoothed copy that the lines are drawn from
+  let primed = false
   const toPx = (v: number) => ((v + 1) / 2) * size
   const lerp = (a: number, b: number, L: number) => (L - a) / (b - a || 1e-9)
   const contour = (L: number) => {
     ctx.beginPath()
     for (let j = 0; j < GR; j++) {
       for (let i = 0; i < GR; i++) {
-        const a = F[j * (GR + 1) + i], b = F[j * (GR + 1) + i + 1]
-        const c = F[(j + 1) * (GR + 1) + i + 1], d = F[(j + 1) * (GR + 1) + i]
+        const a = Fs[j * (GR + 1) + i], b = Fs[j * (GR + 1) + i + 1]
+        const c = Fs[(j + 1) * (GR + 1) + i + 1], d = Fs[(j + 1) * (GR + 1) + i]
         const code = (a > L ? 8 : 0) | (b > L ? 4 : 0) | (c > L ? 2 : 0) | (d > L ? 1 : 0)
         if (code === 0 || code === 15) continue
         const x0 = (i / GR) * 2 - 1, x1 = ((i + 1) / GR) * 2 - 1
@@ -173,6 +176,9 @@ export function mountNet(canvas: HTMLCanvasElement, onStatus: (s: Status) => voi
     ctx.clearRect(0, 0, size, size)
     for (let j = 0; j <= GR; j++)
       for (let i = 0; i <= GR; i++) F[j * (GR + 1) + i] = forward((i / GR) * 2 - 1, (j / GR) * 2 - 1)
+    // ease the drawn field towards the live one so the lines glide rather than twitch
+    for (let k = 0; k < F.length; k++) Fs[k] = primed ? Fs[k] + (F[k] - Fs[k]) * 0.08 : F[k]
+    primed = true
     ctx.lineJoin = 'round'
     ctx.lineCap = 'round'
     ctx.strokeStyle = fg
@@ -217,16 +223,16 @@ export function mountNet(canvas: HTMLCanvasElement, onStatus: (s: Status) => voi
   let settled = 0
   const tick = () => {
     let loss = 0
-    for (let i = 0; i < 3; i++) loss = trainBatch()
+    loss = trainBatch()
     ema = ema * 0.9 + loss * 0.1
     if (ema < 0.05) settled++
-    if (settled > 60 * 8) {
+    if (settled > 60 * 20) {
       init()
       ema = 0.7
       settled = 0
     }
     draw()
-    if (step % 12 === 0) onStatus({ step, loss: ema })
+    if (step % 6 === 0) onStatus({ step, loss: ema })
     raf = requestAnimationFrame(tick)
   }
   raf = requestAnimationFrame(tick)
