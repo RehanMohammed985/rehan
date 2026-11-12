@@ -7,7 +7,7 @@ export const now = [
 export const projects = [
   {
     name: 'Pathway',
-    desc: 'First place at WolfHacks.',
+    desc: 'Know your next move. Courses, materials and your week in one place, an explainable model that flags which course needs attention, and Viva, a voice assistant that plans the next step. First place at WolfHacks.',
   },
   {
     name: 'Kinesis',
