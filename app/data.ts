@@ -1,7 +1,7 @@
 export const now = [
   'Researching multi-agent systems and human-simulation agents at ARNAV Lab, NC State.',
   'Building eval pipelines and agent behavior scoring for a production multi-agent platform at Boardy.',
-  'Working on a startup in edtech.',
+  'Building something great.',
 ]
 
 export const projects = [
