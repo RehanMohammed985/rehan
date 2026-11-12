@@ -4,11 +4,13 @@ import { useSyncExternalStore } from 'react'
 import { quotes } from './quotes'
 
 const DAY = 86_400_000
+const START = Date.UTC(2026, 10, 10) // first day shows quotes[0]
 
 function todayIndex() {
   const d = new Date()
   const local = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())
-  return Math.floor(local / DAY) % quotes.length
+  const days = Math.floor((local - START) / DAY)
+  return ((days % quotes.length) + quotes.length) % quotes.length
 }
 
 const subscribe = () => () => {}
