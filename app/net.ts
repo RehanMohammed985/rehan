@@ -130,55 +130,76 @@ export function mountNet(canvas: HTMLCanvasElement, onStatus: (s: Status) => voi
     return loss / B
   }
 
-  const cells = 48
-  const field = document.createElement('canvas')
-  field.width = cells
-  field.height = cells
-  const fctx = field.getContext('2d')!
-  const img = fctx.createImageData(cells, cells)
-  const draw = () => {
-    ctx.clearRect(0, 0, size, size)
-    // decision field: soft grey where the net predicts the filled class
-    for (let gy = 0; gy < cells; gy++) {
-      for (let gx = 0; gx < cells; gx++) {
-        const x = ((gx + 0.5) / cells) * 2 - 1
-        const y = ((gy + 0.5) / cells) * 2 - 1
-        const p = forward(x, y)
-        const k = (gy * cells + gx) * 4
-        img.data[k] = 17
-        img.data[k + 1] = 17
-        img.data[k + 2] = 17
-        img.data[k + 3] = Math.round(Math.max(0, p - 0.5) * 2 * 30)
+  // contour lines of the prediction field (marching squares)
+  const GR = 56
+  const F = new Float32Array((GR + 1) * (GR + 1))
+  const toPx = (v: number) => ((v + 1) / 2) * size
+  const lerp = (a: number, b: number, L: number) => (L - a) / (b - a || 1e-9)
+  const contour = (L: number) => {
+    ctx.beginPath()
+    for (let j = 0; j < GR; j++) {
+      for (let i = 0; i < GR; i++) {
+        const a = F[j * (GR + 1) + i], b = F[j * (GR + 1) + i + 1]
+        const c = F[(j + 1) * (GR + 1) + i + 1], d = F[(j + 1) * (GR + 1) + i]
+        const code = (a > L ? 8 : 0) | (b > L ? 4 : 0) | (c > L ? 2 : 0) | (d > L ? 1 : 0)
+        if (code === 0 || code === 15) continue
+        const x0 = (i / GR) * 2 - 1, x1 = ((i + 1) / GR) * 2 - 1
+        const y0 = (j / GR) * 2 - 1, y1 = ((j + 1) / GR) * 2 - 1
+        const top = [x0 + (x1 - x0) * lerp(a, b, L), y0]
+        const right = [x1, y0 + (y1 - y0) * lerp(b, c, L)]
+        const bottom = [x0 + (x1 - x0) * lerp(d, c, L), y1]
+        const left = [x0, y0 + (y1 - y0) * lerp(a, d, L)]
+        const segs: number[][][] = []
+        switch (code) {
+          case 1: case 14: segs.push([left, bottom]); break
+          case 2: case 13: segs.push([bottom, right]); break
+          case 3: case 12: segs.push([left, right]); break
+          case 4: case 11: segs.push([top, right]); break
+          case 5: segs.push([left, top], [bottom, right]); break
+          case 6: case 9: segs.push([top, bottom]); break
+          case 7: case 8: segs.push([left, top]); break
+          case 10: segs.push([top, right], [left, bottom]); break
+        }
+        for (const [p, q] of segs) {
+          ctx.moveTo(toPx(p[0]), toPx(p[1]))
+          ctx.lineTo(toPx(q[0]), toPx(q[1]))
+        }
       }
     }
-    fctx.putImageData(img, 0, 0)
-    ctx.imageSmoothingEnabled = true
-    ctx.imageSmoothingQuality = 'high'
-    ctx.drawImage(field, 0, 0, size, size)
-    // fade the field out towards the edges so it has no hard square border
-    ctx.globalCompositeOperation = 'destination-in'
-    const g = ctx.createRadialGradient(size / 2, size / 2, size * 0.3, size / 2, size / 2, size * 0.68)
-    g.addColorStop(0, 'rgba(0,0,0,1)')
-    g.addColorStop(1, 'rgba(0,0,0,0)')
-    ctx.fillStyle = g
-    ctx.fillRect(0, 0, size, size)
-    ctx.globalCompositeOperation = 'source-over'
-    // points
+    ctx.stroke()
+  }
+
+  const draw = () => {
+    ctx.clearRect(0, 0, size, size)
+    for (let j = 0; j <= GR; j++)
+      for (let i = 0; i <= GR; i++) F[j * (GR + 1) + i] = forward((i / GR) * 2 - 1, (j / GR) * 2 - 1)
+    ctx.lineJoin = 'round'
+    ctx.lineCap = 'round'
+    ctx.strokeStyle = fg
+    // faint bands either side of the boundary, then the boundary itself
+    ctx.lineWidth = 1
+    ctx.globalAlpha = 0.16
+    for (const L of [0.1, 0.25, 0.75, 0.9]) contour(L)
+    ctx.globalAlpha = 1
+    ctx.lineWidth = 1.4
+    contour(0.5)
+    // points: filled for one class, hollow for the other; a ring marks a mistake
     for (let i = 0; i < N; i++) {
       const [x, y] = X[i]
-      const px = ((x + 1) / 2) * size
-      const py = ((y + 1) / 2) * size
+      const px = toPx(x), py = toPx(y)
+      const wrong = (forward(x, y) > 0.5 ? 1 : 0) !== Y[i]
       ctx.beginPath()
       ctx.arc(px, py, 2.4, 0, Math.PI * 2)
-      if (Y[i]) {
-        ctx.fillStyle = fg
-        ctx.fill()
-      } else {
-        ctx.fillStyle = '#fff'
-        ctx.fill()
-        ctx.lineWidth = 1
-        ctx.strokeStyle = fg
+      ctx.fillStyle = Y[i] ? fg : '#fff'
+      ctx.fill()
+      ctx.lineWidth = 1
+      ctx.stroke()
+      if (wrong) {
+        ctx.beginPath()
+        ctx.arc(px, py, 5.5, 0, Math.PI * 2)
+        ctx.globalAlpha = 0.5
         ctx.stroke()
+        ctx.globalAlpha = 1
       }
     }
   }

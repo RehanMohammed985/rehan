@@ -57,23 +57,29 @@ h1 {
 
 .home {
   min-height: 100svh;
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: minmax(0, 26rem) 300px;
+  grid-template-areas: "top fig" "bottom fig";
+  column-gap: 4rem;
+  align-content: center;
   justify-content: center;
-  gap: 4rem;
   padding: 2rem 1.5rem;
 }
 
-.home > div:first-child {
-  width: 100%;
-  max-width: 26rem;
+.home .top {
+  grid-area: top;
+}
+
+.home .bottom {
+  grid-area: bottom;
 }
 
 /* diagram */
 
 .diagram {
+  grid-area: fig;
+  align-self: center;
   position: relative;
-  flex: 0 0 300px;
   width: 300px;
 }
 
@@ -327,10 +333,11 @@ h1 {
 
 @media (min-width: 1100px) {
   .home {
-    gap: 7rem;
+    grid-template-columns: minmax(0, 30rem) 360px;
+    column-gap: 7rem;
   }
-  .home > div:first-child {
-    max-width: 30rem;
+  .home .top,
+  .home .bottom {
     font-size: 17px;
   }
   .home h1 {
@@ -345,23 +352,25 @@ h1 {
     font-size: 14px;
   }
   .diagram {
-    flex-basis: 360px;
     width: 360px;
   }
 }
 
 @media (max-width: 900px) {
   .home {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 3rem;
-    padding-top: 6rem;
+    grid-template-columns: minmax(0, 26rem);
+    grid-template-areas: "top" "fig" "bottom";
+    row-gap: 2.5rem;
+    justify-content: start;
+    padding-top: 4rem;
     padding-bottom: 5rem;
     min-height: 0;
   }
+  .home .nav {
+    margin-top: 0;
+  }
   .diagram {
-    flex: none;
-    width: 220px;
+    width: 240px;
     margin-left: -0.75rem;
   }
   .diagram .tip {
