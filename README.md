@@ -1,7 +1,10 @@
-# Rehan Mohammed — Portfolio
+# rehan
 
-Built with **Next.js 14**, **TypeScript**, and **Tailwind CSS**.
+Personal site. Three pages, plain text.
 
-I am Rehan Mohammed, currently majoring in Business and Computer Science at NC State. I am passionate about AI, machine learning, and how complex systems operate. I love working on innovative projects and contributing to research in artificial intelligence.
+Next.js static export, deployed to GitHub Pages on push to `main`.
 
-
+```bash
+npm install
+npm run dev
+```

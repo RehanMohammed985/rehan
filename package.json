@@ -1,20 +1,15 @@
 {
-  "name": "rehan-mohammed-portfolio",
+  "name": "rehan",
   "version": "1.0.0",
-  "description": "Personal portfolio website for Rehan Mohammed",
-  "main": "index.js",
+  "description": "Personal site of Rehan Mohammed",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "export": "next build && next export"
+    "lint": "next lint"
   },
   "dependencies": {
     "autoprefixer": "^10.4.16",
-    "axios": "^1.6.0",
-    "framer-motion": "^10.16.0",
-    "lucide-react": "^0.292.0",
     "next": "^14.0.0",
     "postcss": "^8.4.31",
     "react": "^18.2.0",
@@ -29,13 +24,6 @@
     "eslint-config-next": "^14.0.0",
     "typescript": "^5.2.0"
   },
-  "keywords": [
-    "portfolio",
-    "personal",
-    "website",
-    "react",
-    "nextjs"
-  ],
   "author": "Rehan Mohammed",
   "license": "MIT"
 }
