@@ -108,7 +108,8 @@ h1 {
 
 .diagram .caption {
   display: block;
-  margin-top: -0.75rem;
+  margin-top: 0.6rem;
+  font-variant-numeric: tabular-nums;
   text-align: center;
   font-size: 12px;
   letter-spacing: 0.02em;
