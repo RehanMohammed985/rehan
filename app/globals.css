@@ -325,6 +325,31 @@ h1 {
   font-size: 13px;
 }
 
+@media (min-width: 1100px) {
+  .home {
+    gap: 7rem;
+  }
+  .home > div:first-child {
+    max-width: 30rem;
+    font-size: 17px;
+  }
+  .home h1 {
+    font-size: 17px;
+  }
+  .home .quote {
+    font-size: 19px;
+    line-height: 1.5;
+  }
+  .home .quote cite,
+  .home .links {
+    font-size: 14px;
+  }
+  .diagram {
+    flex-basis: 360px;
+    width: 360px;
+  }
+}
+
 @media (max-width: 900px) {
   .home {
     flex-direction: column;
